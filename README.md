@@ -20,4 +20,5 @@ Code Requirements:
 Optional: 
 
 • You unit tests need to have at least 50% coverage.
+
 • Read in the words from a text file with Comma-separated values and then store them in an array or list of Strings.
