@@ -10,8 +10,17 @@ namespace HangmanGame
     {
         public Hangman()
         {
-            Init();
+            Random random = new Random();
+            int index = random.Next(Words.Length);
+            SecretWord = Words[index].ToLower();
+
+            Correct = new char[SecretWord.Length];
+            Incorrect = new StringBuilder();
+
+            Guess = string.Empty;
+            Tries = 10;
         }
+
 
         private string[] _words = {
             "summer",
@@ -27,54 +36,45 @@ namespace HangmanGame
             "vacation",
             "swimsuit",
         };
+
+
         private string[] Words
         {
             get => _words;
-            set => _words = value;
         }
 
 
-        private string _secretWord = string.Empty;
         private string SecretWord
         {
-            get => _secretWord;
-            set => _secretWord = value;
+            get; set;
         }
 
 
-        private char[] _correct = Array.Empty<char>();
         private char[] Correct
         {
-            get => _correct;
-            set => _correct = value;
+            get; set;
         }
 
 
-        private StringBuilder _incorrect = new();
         public StringBuilder Incorrect
         {
-            get => _incorrect;
-            private set => _incorrect = value;
+            get; private set;
         }
 
 
-        private string _guess = string.Empty;
         private string Guess
         {
-            get => _guess;
-            set => _guess = value;
+            get; set;
         }
 
 
-        private int _tries = 10;
         public int Tries
         {
-            get => _tries;
-            private set => _tries = value;
+            get; private set;
         }
 
 
-        public void Init()
+        public void Reset()
         {
             Random random = new Random();
             int index = random.Next(Words.Length);
@@ -124,7 +124,7 @@ namespace HangmanGame
                 string when GuessIsWord() => GuessWord(),
             };
 
-            result = (Tries <= 0 && !HasWinner()) ? $"{result} You have no guesses left!\n\nGAME OVER." : result;
+            result = (Tries <= 0 && !HasWinner()) ? $"{result} You have no guesses left!\n\nThe secret word was '{SecretWord.ToUpper()}'.\n\nGAME OVER." : result;
 
             return result;
         }
@@ -157,7 +157,6 @@ namespace HangmanGame
 
         private void AddCorrectLetter(char letter)
         {
-            //string correct = Correct.ToString(); //Does not work for some reason
             string correct = new(Correct);
             correct += letter;
             Correct = correct.ToCharArray();
@@ -198,7 +197,7 @@ namespace HangmanGame
             } 
             else
             {
-                result = $"'{Guess}' is wrong.";
+                result = $"'{Guess.ToLower()}' is wrong.";
             }
 
             return result;
@@ -232,17 +231,55 @@ namespace HangmanGame
             return hasWinner;
         }
 
+
     }
+
 
     internal class HangmanController
     {
         public HangmanController()
+        {
+            Game = new Hangman();
+            Play = true;
+            ShowRules = true;
+            Result = string.Empty;
+            PlayHangman();
+        }
+
+
+        private Hangman Game
+        {
+            get; set;
+        }
+
+
+        private bool Play
+        {
+            get; set;
+        }
+
+
+        private bool ShowRules
+        {
+            get; set;
+        }
+
+
+        private string Result
+        {
+            get; set;
+        }
+
+
+        private void PlayHangman()
         {
             while (Play)
             {
                 Console.Clear(); //Clear previous round
 
                 Console.WriteLine("\n*-*-*-* Hangman *-*-*-*\n");
+
+                PrintRules();
 
                 PrintStatus();
 
@@ -265,26 +302,14 @@ namespace HangmanGame
         }
 
 
-        private Hangman _game = new();
-        private Hangman Game 
+        private void PrintRules()
         {
-            get => _game;
-        }
-
-
-        private bool _play = true;
-        private bool Play
-        {
-            get => _play;
-            set => _play = value;
-        }
-
-
-        private string _result = string.Empty;
-        private string Result
-        {
-            get => _result;
-            set => _result = value;
+            if (ShowRules)
+            {
+                Console.WriteLine($"Welcome to Hangman! Try to guess the letters in the secret word. You have {Game.Tries} guesses.");
+                Console.WriteLine("Hint: The theme of the secret word is 'summer'.\n");
+                ShowRules = false;
+            }
         }
 
 
@@ -331,12 +356,15 @@ namespace HangmanGame
             if (Play)
             {
                 Result = string.Empty;
-                Game.Init();
+                ShowRules = true;
+                Game.Reset();
             }
             else
             {
                 Console.WriteLine("\n\nBye!");
             }
         }
+
+
     }
 }
