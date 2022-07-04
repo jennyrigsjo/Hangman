@@ -28,3 +28,5 @@ C:\Users\jenny\Dropbox\Kurser\Lexicon\inlämningsuppgifter\vecka 26\Hangman2\Han
 C:\Users\jenny\Dropbox\Kurser\Lexicon\inlämningsuppgifter\vecka 26\Hangman2\Hangman\obj\Debug\net6.0\Hangman.pdb
 C:\Users\jenny\Dropbox\Kurser\Lexicon\inlämningsuppgifter\vecka 26\Hangman2\Hangman\obj\Debug\net6.0\Hangman.genruntimeconfig.cache
 C:\Users\jenny\Dropbox\Kurser\Lexicon\inlämningsuppgifter\vecka 26\Hangman2\Hangman\obj\Debug\net6.0\ref\Hangman.dll
+C:\Users\jenny\Dropbox\Kurser\Lexicon\inlämningsuppgifter\vecka 26\Hangman\Hangman\obj\Debug\net6.0\Hangman.Properties.Resources.resources
+C:\Users\jenny\Dropbox\Kurser\Lexicon\inlämningsuppgifter\vecka 26\Hangman\Hangman\obj\Debug\net6.0\Hangman.csproj.GenerateResource.cache

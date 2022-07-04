@@ -4,12 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Runtime.CompilerServices;
+[assembly:InternalsVisibleTo("HangmanTests")]
+
 namespace HangmanGame
 {
     internal class Hangman
     {
         public Hangman()
         {
+            File = new FileManager("words.txt");
+            Words = File.GetStringArray();
+
             Random random = new Random();
             int index = random.Next(Words.Length);
             SecretWord = Words[index].ToLower();
@@ -22,25 +28,15 @@ namespace HangmanGame
         }
 
 
-        private string[] _words = {
-            "summer",
-            "flower",
-            "icecream",
-            "beach",
-            "sand",
-            "sea",
-            "sunglasses",
-            "lake",
-            "cloud",
-            "rain",
-            "vacation",
-            "swimsuit",
-        };
+        private FileManager File
+        {
+            get; set;
+        }
 
 
         private string[] Words
         {
-            get => _words;
+            get; set;
         }
 
 
@@ -124,7 +120,7 @@ namespace HangmanGame
                 string when GuessIsWord() => GuessWord(),
             };
 
-            result = (Tries <= 0 && !HasWinner()) ? $"{result} You have no guesses left!\n\nThe secret word was '{SecretWord.ToUpper()}'.\n\nGAME OVER." : result;
+            result = !HasWinner() && Tries <= 0 ? $"{result} You have no guesses left!\n\nThe secret word was '{SecretWord.ToUpper()}'.\n\nGAME OVER." : result;
 
             return result;
         }
@@ -132,19 +128,19 @@ namespace HangmanGame
 
         private bool AllCharsAreLetters()
         {
-            return (!string.IsNullOrEmpty(Guess) && !string.IsNullOrWhiteSpace(Guess) && Guess.All(char.IsLetter));
+            return !string.IsNullOrWhiteSpace(Guess) && Guess.All(char.IsLetter);
         }
 
 
         private bool GuessIsLetter()
         {
-            return (AllCharsAreLetters() && Guess.Length == 1);
+            return AllCharsAreLetters() && Guess.Length == 1;
         }
 
 
         private bool GuessIsWord()
         {
-            return (AllCharsAreLetters() && Guess.Length > 1);
+            return AllCharsAreLetters() && Guess.Length > 1;
         }
 
 
@@ -157,9 +153,13 @@ namespace HangmanGame
 
         private void AddCorrectLetter(char letter)
         {
-            string correct = new(Correct);
-            correct += letter;
-            Correct = correct.ToCharArray();
+            for (int i = 0; i < SecretWord.Length; i++)
+            {
+                if (SecretWord[i] == letter)
+                {
+                    Correct[i] = letter;
+                }
+            }
         }
 
 
@@ -189,46 +189,13 @@ namespace HangmanGame
 
         private string GuessWord()
         {
-            string result;
-
-            if (Guess.ToLower() == SecretWord)
-            {
-                result = $"Correct! The secret word was '{Guess.ToUpper()}'.";
-            } 
-            else
-            {
-                result = $"'{Guess.ToLower()}' is wrong.";
-            }
-
-            return result;
+            return Guess.ToLower() == SecretWord ? $"Correct! The secret word was '{Guess.ToUpper()}'." : $"'{Guess.ToLower()}' is wrong.";
         }
 
 
         public bool HasWinner()
         {
-            bool hasWinner = false;
-
-            if (Guess.ToLower() == SecretWord)
-            {
-                hasWinner = true;
-            }
-            else
-            {
-                foreach (char letter in SecretWord)
-                {
-                    if (Correct.Contains(letter))
-                    {
-                        hasWinner = true;
-                    }
-                    else
-                    {
-                        hasWinner = false;
-                        break;
-                    }
-                }
-            }
-
-            return hasWinner;
+            return Guess.ToLower() == SecretWord || new string(Correct) == SecretWord;
         }
 
 
@@ -292,7 +259,7 @@ namespace HangmanGame
                 Console.Write($"\nMake a guess (letter or word): ");
                 var guess = Console.ReadLine();
 
-                if (string.IsNullOrEmpty(guess) || string.IsNullOrWhiteSpace(guess))
+                if (string.IsNullOrWhiteSpace(guess))
                 {
                     continue;
                 }
@@ -366,5 +333,35 @@ namespace HangmanGame
         }
 
 
+    }
+
+
+    internal class FileManager
+    {
+        public FileManager(string fileName, string? filePath = null)
+        {
+            FileName = fileName;
+            FilePath = filePath ?? Directory.GetCurrentDirectory();
+        }
+
+
+        public string FileName
+        {
+            get; set;
+        }
+
+
+        public string FilePath
+        {
+            get; set;
+        }
+
+
+        public string[] GetStringArray()
+        {
+            string path = Path.Combine(FilePath, FileName);
+            string[] lines = File.ReadAllLines(path);
+            return lines;
+        }
     }
 }
