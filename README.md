@@ -1,5 +1,5 @@
 # Hangman
-**Lexicon Assignment 3: Hangman**
+**Lexicon Assignment 2: Hangman**
 
 Your assignment is to create a game called Hangman. Hangman game is a pen and pencil guessing game for two or more players. You can read more about it https://en.wikipedia.org/wiki/Hangman_(game). One player (in our case the application) thinks of a word and the other player(s) tries to guess it by suggesting letters. The word to guess is represented by a row of dashes where each dash represents a letter in the word. 
 
